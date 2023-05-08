@@ -1,69 +1,67 @@
 require("dotenv").config();
-const nodeMailer = require("nodemailer");
-const otpGen = require("otp-generator");
+// const nodeMailer = require("nodemailer");
+// const otpGen = require("otp-generator");
 // const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
 // const client = require("twilio")(accountSid, authToken);
 
-let transporter = nodeMailer.createTransport({
-  host: process.env.SMTP,
-  secure: true,
-  port: 465,
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASS,
-  },
-});
+// let transporter = nodeMailer.createTransport({
+//   host: process.env.SMTP,
+//   secure: true,
+//   port: 465,
+//   auth: {
+//     user: process.env.EMAIL,
+//     pass: process.env.PASS,
+//   },
+// });
 class RegistrationController {
-  static sendOTP = async (req, res) => {
-    const otp = otpGen.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const mailOptions = {
-      from: process.env.EMAIL, // sender address
-      to: req.body.email,
-      subject: "OTP Verification", // Subject line
-      html:
-        '<h3 style="color:grey;text-align: center;">Please verify given 6 digit otp.</h3> <h2 style="text-align: center;">' +
-        otp +
-        "</h2>", // plain text body
-    };
+  // static sendOTP = async (req, res) => {
+  //   const otp = otpGen.generate(6, {
+  //     digits: true,
+  //     lowerCaseAlphabets: false,
+  //     upperCaseAlphabets: false,
+  //     specialChars: false,
+  //   });
+  //   const mailOptions = {
+  //     from: process.env.EMAIL, // sender address
+  //     to: req.body.email,
+  //     subject: "OTP Verification", // Subject line
+  //     html:
+  //       '<h3 style="color:grey;text-align: center;">Please verify given 6 digit otp.</h3> <h2 style="text-align: center;">' +
+  //       otp +
+  //       "</h2>", // plain text body
+  //   };
 
-    await transporter.sendMail(mailOptions, function (err, info) {
-      if (err) {
-        res.json({ message: "Some error occured!", error: err });
-        console.log(err);
-      }
-      res.json({ message: "OTP has been sent successfully!", otp: otp });
-    });
-  };
+  //   await transporter.sendMail(mailOptions, function (err, info) {
+  //     if (err) {
+  //       res.json({ message: "Some error occured!", error: err });
+  //       console.log(err);
+  //     }
+  //     res.json({ message: "OTP has been sent successfully!", otp: otp });
+  //   });
+  // };
 
-  static sendImage  (req, res) {
-   
-   
-  
-    
-    res.json({message:"Image Uploaded Successfully.",file:{
-      fileName:req.file.originalname,
-      size:req.file.size,
-      path:"uploads/"+req.file.filename,
-    },});
-  };
-  static sendVideo  (req, res) {
-   
-   
-  
-    
-    res.json({message:"Video Uploaded Successfully.",file:{
-      fileName:req.file.originalname,
-      size:req.file.size,
-      path:"uploads/"+req.file.filename,
-    },});
-  };
+  static sendImage(req, res) {
+    res.json({
+      message: "Image Uploaded Successfully.",
+      file: {
+        fileName: req.file.originalname,
+        size: req.file.size,
+        path: "uploads/" + req.file.filename,
+      },
+    });
+  }
+  static sendVideo(req, res) {
+    res.json({
+      message: "Video Uploaded Successfully.",
+      file: {
+        fileName: req.file.originalname,
+        size: req.file.size,
+        path: "uploads/" + req.file.filename,
+      },
+    });
+  }
 
   // static sendNumberOtp  (req, res) {
   //   client.verify.v2
