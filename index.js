@@ -5,6 +5,7 @@ const errorHandler = require("./error_handler/error_handler");
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 const Test = require("./models/user");
+const port=process.env.PORT||3000;
 
 mongoose
   .connect(process.env.DB_URL)
@@ -23,6 +24,6 @@ app.use("/uploads", express.static("./public/upload"));
 app.use(errorHandler);
 
 // Start the server
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
+app.listen(port, () => {
+  console.log("Server is listening on port "+port);
 });
