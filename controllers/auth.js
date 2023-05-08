@@ -1,10 +1,10 @@
 require("dotenv").config();
 const nodeMailer = require("nodemailer");
 const otpGen = require("otp-generator");
-const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
-const client = require("twilio")(accountSid, authToken);
+// const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
+// const client = require("twilio")(accountSid, authToken);
 
 let transporter = nodeMailer.createTransport({
   host: process.env.SMTP,
@@ -65,45 +65,45 @@ class RegistrationController {
     },});
   };
 
-  static sendNumberOtp  (req, res) {
-    client.verify.v2
-      .services(verifySid)
-      .verifications.create({ to: req.body.phone, channel: "sms" })
-      .then((verification) => {
-        res.json({
-          valid: verification.valid,
-          status: verification.status,
-          phone: verification.to,
-        });
-      })
-      .catch((err) => {
-        throw Error(err);
-      });
-  };
+  // static sendNumberOtp  (req, res) {
+  //   client.verify.v2
+  //     .services(verifySid)
+  //     .verifications.create({ to: req.body.phone, channel: "sms" })
+  //     .then((verification) => {
+  //       res.json({
+  //         valid: verification.valid,
+  //         status: verification.status,
+  //         phone: verification.to,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       throw Error(err);
+  //     });
+  // };
 
-  static verifyOTP  (req, res)  {
-    client.verify.v2
-      .services(verifySid)
-      .verificationChecks.create({ to: req.body.phone, code: req.body.otp })
-      .then((verification_check) => {
-        if (verification_check.valid) {
-          res.json({
-            valid: verification_check.valid,
-            status: verification_check.status,
-            message: "Verification Succeeded.",
-          });
-        } else {
-          res.json({
-            valid: verification_check.valid,
-            status: verification_check.status,
-            message: "Check your entered otp.",
-          });
-        }
-      })
-      .catch((err) => {
-        throw Error(err.Error);
-      });
-  };
+  // static verifyOTP  (req, res)  {
+  //   client.verify.v2
+  //     .services(verifySid)
+  //     .verificationChecks.create({ to: req.body.phone, code: req.body.otp })
+  //     .then((verification_check) => {
+  //       if (verification_check.valid) {
+  //         res.json({
+  //           valid: verification_check.valid,
+  //           status: verification_check.status,
+  //           message: "Verification Succeeded.",
+  //         });
+  //       } else {
+  //         res.json({
+  //           valid: verification_check.valid,
+  //           status: verification_check.status,
+  //           message: "Check your entered otp.",
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       throw Error(err.Error);
+  //     });
+  // };
 }
 
 module.exports = RegistrationController;
