@@ -42,12 +42,27 @@ class RegistrationController {
     });
   };
 
-  static sendFile  (req, res) {
+  static sendImage  (req, res) {
    
    
   
     
-    res.json({message:"File Uploaded Successfully.",file:req.file,});
+    res.json({message:"Image Uploaded Successfully.",file:{
+      fileName:req.file.originalname,
+      size:req.file.size,
+      path:"uploads/"+req.file.filename,
+    },});
+  };
+  static sendVideo  (req, res) {
+   
+   
+  
+    
+    res.json({message:"Video Uploaded Successfully.",file:{
+      fileName:req.file.originalname,
+      size:req.file.size,
+      path:"uploads/"+req.file.filename,
+    },});
   };
 
   static sendNumberOtp  (req, res) {

@@ -4,7 +4,8 @@ const AuthMiddlewares=require("../middlewares/auth");
 
 const router=express.Router();
 router.post("/otp",RegistrationController.sendOTP);
-router.post("/file",AuthMiddlewares.singleImageMiddleware,RegistrationController.sendFile);
+router.post("/image",AuthMiddlewares.imageMiddleware,RegistrationController.sendImage);
+router.post("/video",AuthMiddlewares.videoMiddleware,RegistrationController.sendVideo);
 router.post("/send_otp",RegistrationController.sendNumberOtp);
 router.post("/verify_otp",RegistrationController.verifyOTP);
 

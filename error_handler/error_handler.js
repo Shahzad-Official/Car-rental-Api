@@ -2,7 +2,7 @@
 
 function errorHandler(err, req, res, next) {
     // Log the error for debugging purposes
-    // console.error(err);
+    
   
     // Handle specific types of errors
     const statusCode = err.statusCode || 500;
