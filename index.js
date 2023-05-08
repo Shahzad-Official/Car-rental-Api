@@ -19,21 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
 app.use("/uploads", express.static("./public/upload"));
-app.post("/test", (req, res) => {
-  const name = req.body.name;
-  const age = req.body.age;
-  var testData = new Test({
-    name: name,
-    age: age,
-  });
-  testData
-    .save()
-    .then((value) => {
-      res.json(value);
-    })
-    .catch((err) => {
-      throw Error(err);
-    });
+app.use("/test", (req, res) => {
+  throw Error("Test Error");
 });
 app.use(errorHandler);
 
