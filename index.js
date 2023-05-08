@@ -20,6 +20,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
 app.use("/uploads", express.static("./public/upload"));
+app.use("/",(req,res)=>{
+  res.json({message:"Api is working fine"});
+});
 
 app.use(errorHandler);
 
