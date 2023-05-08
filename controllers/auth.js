@@ -43,7 +43,11 @@ class RegistrationController {
   };
 
   static sendFile  (req, res) {
-    res.json(req.files);
+   
+   
+  
+    
+    res.json({message:"File Uploaded Successfully.",file:req.file,});
   };
 
   static sendNumberOtp  (req, res) {
