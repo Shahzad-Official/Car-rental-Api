@@ -1,7 +1,7 @@
 require("dotenv").config();
 const nodeMailer = require("nodemailer");
 const otpGen = require("otp-generator");
-const User = require("../models/user");
+const User = require("../models/user_model");
 const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";

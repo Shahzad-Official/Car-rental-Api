@@ -1,6 +1,6 @@
 const express = require('express');
-const RegistrationController = require('../controllers/auth');
-const AuthMiddlewares=require("../middlewares/auth");
+const RegistrationController = require('../controllers/auth_controller');
+const AuthMiddlewares=require("../middlewares/auth_middelware");
 
 const router=express.Router();
 router.post("/otp",RegistrationController.sendOTP);

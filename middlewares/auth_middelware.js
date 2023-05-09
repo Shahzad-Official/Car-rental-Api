@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const multer = require("multer");
 const path = require("path");
-const User = require("../models/user");
+const User = require("../models/user_model");
 const storage = multer.diskStorage({
   destination: "./public/upload",
   filename: (req, file, cb) => {
