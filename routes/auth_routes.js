@@ -12,4 +12,5 @@ router.post("/signUp",AuthMiddlewares.signUpMiddleware,RegistrationController.si
 router.post("/login",AuthMiddlewares.loginMiddleware,RegistrationController.login);
 
 
+
 module.exports=router;

@@ -4,6 +4,8 @@ const path = require("path");
 const User = require("../models/user_model");
 const jwt = require("jsonwebtoken");
 
+
+
 const storage = multer.diskStorage({
   destination: "./public/upload",
   filename: (req, file, cb) => {
@@ -91,19 +93,25 @@ class AuthMiddleware {
     }
   };
   static tokenAuthentication = (req, res, next) => {
+    const cookie=req.cookies.token;
     
     if (req.headers.authorization == null) {
       res.status(401).json({ message: "Token required!" });
     } else {
       const token = req.headers.authorization.split("Bearer ")[1];
-
-      jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-          return res.status(403).json({ message: "Invalid token" });
-        } else {
-         next();
+        if(cookie===token){
+          jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+            if (err) {
+              return res.status(403).json({ message: "Invalid token" });
+            } else {
+              
+            next();
+            }
+          });
+        }else{
+          res.status(401).json({message:"Token has expired!"});
         }
-      });
+      
     }
   };
 }
