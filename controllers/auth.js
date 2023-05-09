@@ -1,6 +1,7 @@
 require("dotenv").config();
 const nodeMailer = require("nodemailer");
 const otpGen = require("otp-generator");
+const User = require("../models/user");
 const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
@@ -42,30 +43,28 @@ class RegistrationController {
     });
   };
 
-  static sendImage  (req, res) {
-   
-   
-  
-    
-    res.json({message:"Image Uploaded Successfully.",file:{
-      fileName:req.file.originalname,
-      size:req.file.size,
-      path:"uploads/"+req.file.filename,
-    },});
-  };
-  static sendVideo  (req, res) {
-   
-   
-  
-    
-    res.json({message:"Video Uploaded Successfully.",file:{
-      fileName:req.file.originalname,
-      size:req.file.size,
-      path:"uploads/"+req.file.filename,
-    },});
-  };
+  static sendImage(req, res) {
+    res.json({
+      message: "Image Uploaded Successfully.",
+      file: {
+        fileName: req.file.originalname,
+        size: req.file.size,
+        path: "uploads/" + req.file.filename,
+      },
+    });
+  }
+  static sendVideo(req, res) {
+    res.json({
+      message: "Video Uploaded Successfully.",
+      file: {
+        fileName: req.file.originalname,
+        size: req.file.size,
+        path: "uploads/" + req.file.filename,
+      },
+    });
+  }
 
-  static sendNumberOtp  (req, res) {
+  static sendNumberOtp(req, res) {
     client.verify.v2
       .services(verifySid)
       .verifications.create({ to: req.body.phone, channel: "sms" })
@@ -79,9 +78,9 @@ class RegistrationController {
       .catch((err) => {
         throw Error(err);
       });
-  };
+  }
 
-  static verifyOTP  (req, res)  {
+  static verifyOTP(req, res) {
     client.verify.v2
       .services(verifySid)
       .verificationChecks.create({ to: req.body.phone, code: req.body.otp })
@@ -103,7 +102,25 @@ class RegistrationController {
       .catch((err) => {
         throw Error(err.Error);
       });
+  }
+
+  static signUp = async (req, res) => {
+    const user = new User({
+      name: req.body.name,
+      email: req.body.email,
+    });
+    res.json(user);
+    await user
+      .save()
+      .then((value) => {
+        console.log(value);
+        res.json({ message: "Data inseted Successfully" });
+      })
+      .catch((err) => {
+        throw Error(err);
+      });
   };
+
 }
 
 module.exports = RegistrationController;

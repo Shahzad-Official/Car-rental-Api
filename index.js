@@ -4,7 +4,7 @@ const router = require("./routes/auth");
 const errorHandler = require("./error_handler/error_handler");
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
-const Test = require("./models/user");
+
 const port=process.env.PORT||3000;
 
 mongoose
