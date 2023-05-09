@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema(
     createdOn:{
      type:Date,
       default:Date.now(),
-    }
+    },
+   
     
   },
   { versionKey: false }

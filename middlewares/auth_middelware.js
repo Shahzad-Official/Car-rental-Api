@@ -2,6 +2,8 @@ const Joi = require("joi");
 const multer = require("multer");
 const path = require("path");
 const User = require("../models/user_model");
+const jwt = require("jsonwebtoken");
+
 const storage = multer.diskStorage({
   destination: "./public/upload",
   filename: (req, file, cb) => {
@@ -66,6 +68,42 @@ class AuthMiddleware {
         res.status(409).json({ message: "The email is already exist!" });
       }
     });
+  };
+  static loginMiddleware = (req, res, next) => {
+    const schema = Joi.object({
+      email: Joi.string().email().required(),
+      password: Joi.string()
+        .pattern(
+          new RegExp(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+          )
+        )
+        .required()
+        .messages({
+          "string.pattern.base": `"" Password must have at least 8 characters, including at least one lowercase letter, one uppercase letter, one digit, and one special character.`,
+        }),
+    }).unknown();
+    const error = schema.validate(req.body);
+    if (error.error) {
+      res.status(403).json({ error: error.error.details[0].message });
+    } else {
+      next();
+    }
+  };
+  static tokenAuthentication = (req, res, next) => {
+    if (req.headers.authorization == null) {
+      res.status(401).json({ message: "Token required!" });
+    } else {
+      const token = req.headers.authorization.split("Bearer ")[1];
+
+      jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ message: "Invalid token" });
+        } else {
+          next();
+        }
+      });
+    }
   };
 }
 module.exports = AuthMiddleware;

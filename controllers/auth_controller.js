@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
 const client = require("twilio")(accountSid, authToken);
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 let transporter = nodeMailer.createTransport({
   host: process.env.SMTP,
@@ -106,27 +107,69 @@ class RegistrationController {
   }
 
   static signUp = async (req, res) => {
+    
     const hashPassword = await bcrypt
       .hash(req.body.password, 10)
       .catch((err) => {
         res.status(400).json({ error: "Password hashing error!" });
       });
-
+  
     const user = new User({
       firstname: req.body.firstname,
-      lastname:req.body.lastname,
+      lastname: req.body.lastname,
       email: req.body.email,
       password: hashPassword,
+    
     });
-
 
     await user
       .save()
       .then((value) => {
-        res.json({ message: "Data inserted Successfully", data: value });
+        res
+          .status(201)
+          .json({ message: "Data inserted Successfully", data: value });
       })
       .catch((err) => {
         res.status(403).json({ error: err.message });
+      });
+  };
+  static login = (req, res) => {
+    User.findOne({
+      email: req.body.email,
+    })
+      .then((doc) => {
+        if (!doc) {
+          res.json({ message: "User not found!" });
+        } else {
+          bcrypt
+            .compare(req.body.password, doc.password)
+            .then((result) => {
+              if (result) {
+                const token = jwt.sign(
+                  {
+                    email: doc.email,
+                    password: doc.password,
+                  },
+                  process.env.TOKEN_SECRET
+                );
+               res.json({
+                  message: "Login successfully!",
+                  data: doc,
+                  token,
+                });
+              } else {
+                res.status(401).json({ message: "Check your password!" });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json({ error: "Serverside error occured!" });
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(403).json({ error: err });
       });
   };
 }
