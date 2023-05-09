@@ -8,7 +8,7 @@ router.post("/image",AuthMiddlewares.imageMiddleware,RegistrationController.send
 router.post("/video",AuthMiddlewares.videoMiddleware,RegistrationController.sendVideo);
 router.post("/send_otp",RegistrationController.sendNumberOtp);
 router.post("/verify_otp",RegistrationController.verifyOTP);
-router.post("/signUp",RegistrationController.signUp);
+router.post("/signUp",AuthMiddlewares.signUpMiddleware,RegistrationController.signUp);
 
 
 module.exports=router;

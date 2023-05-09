@@ -6,6 +6,7 @@ const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
 const client = require("twilio")(accountSid, authToken);
+const bcrypt = require("bcrypt");
 
 let transporter = nodeMailer.createTransport({
   host: process.env.SMTP,
@@ -105,22 +106,29 @@ class RegistrationController {
   }
 
   static signUp = async (req, res) => {
+    const hashPassword = await bcrypt
+      .hash(req.body.password, 10)
+      .catch((err) => {
+        res.status(400).json({ error: "Password hashing error!" });
+      });
+
     const user = new User({
-      name: req.body.name,
+      firstname: req.body.firstname,
+      lastname:req.body.lastname,
       email: req.body.email,
+      password: hashPassword,
     });
-    res.json(user);
+
+
     await user
       .save()
       .then((value) => {
-        console.log(value);
-        res.json({ message: "Data inseted Successfully" });
+        res.json({ message: "Data inserted Successfully", data: value });
       })
       .catch((err) => {
-        throw Error(err);
+        res.status(403).json({ error: err.message });
       });
   };
-
 }
 
 module.exports = RegistrationController;
