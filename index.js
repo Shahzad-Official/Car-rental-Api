@@ -5,7 +5,7 @@ const errorHandler = require("./error_handler/error_handler");
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 
 mongoose
   .connect(process.env.DB_URL)
