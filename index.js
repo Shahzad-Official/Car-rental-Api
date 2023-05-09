@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const authRoutes = require("./routes/auth_routes");
-const userRoutes=require("./routes/user_routes");
+const userRoutes = require("./routes/user_routes");
 const errorHandler = require("./error_handler/error_handler");
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
@@ -19,10 +19,11 @@ mongoose
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/auth",authRoutes);
-app.use("/user",userRoutes);
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 app.use("/uploads", express.static("./public/upload"));
 app.get("/", (req, res) => {
+  res.cookie("name","value");
   res.json({ message: "Api is working" });
 });
 app.get("/error", (req, res) => {

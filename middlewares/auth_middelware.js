@@ -91,6 +91,7 @@ class AuthMiddleware {
     }
   };
   static tokenAuthentication = (req, res, next) => {
+    
     if (req.headers.authorization == null) {
       res.status(401).json({ message: "Token required!" });
     } else {
@@ -100,7 +101,7 @@ class AuthMiddleware {
         if (err) {
           return res.status(403).json({ message: "Invalid token" });
         } else {
-          next();
+         next();
         }
       });
     }

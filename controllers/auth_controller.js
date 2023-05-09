@@ -107,19 +107,17 @@ class RegistrationController {
   }
 
   static signUp = async (req, res) => {
-    
     const hashPassword = await bcrypt
       .hash(req.body.password, 10)
       .catch((err) => {
         res.status(400).json({ error: "Password hashing error!" });
       });
-  
+
     const user = new User({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       email: req.body.email,
       password: hashPassword,
-    
     });
 
     await user
@@ -152,7 +150,8 @@ class RegistrationController {
                   },
                   process.env.TOKEN_SECRET
                 );
-               res.json({
+                res.cookie("token", token);
+                res.json({
                   message: "Login successfully!",
                   data: doc,
                   token,
