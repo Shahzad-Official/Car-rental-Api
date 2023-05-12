@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const User = require("../models/user_model");
 const jwt = require("jsonwebtoken");
+const fs =require("fs");
 
 
 
@@ -43,7 +44,7 @@ class AuthMiddleware {
   static imageMiddleware = multer({
     storage: imageStorage,
     fileFilter: imageFilter,
-  }).single("image");
+  }).single("profile");
 
   static videoMiddleware = multer({
     storage: videoStorage,
@@ -74,16 +75,18 @@ class AuthMiddleware {
         const { error } = schema.validate(req.body);
 
         if (error) {
+          fs.unlinkSync(req.file.path);
           return res.status(403).json({ error: error.details[0].message });
         } else {
           if(req.file==null){
             res.status(400).json({message:"Profile image is required!"});
           }else{
-            res.json(req.file);
+           next();
           }
           
         }
       } else {
+        fs.unlinkSync(req.file.path);
         res.status(409).json({ message: "The email is already exist!" });
       }
     });
