@@ -5,7 +5,12 @@ require("dotenv").config();
 class UserController {
   static getAllUsers = async (req, res) => {
    User.find().then((doc)=>{
-    res.json({message:"success",data:doc});
+    if(doc[0]!=null){
+      res.json({message:"success",data:doc});
+    }else{
+      console.log(req.cookies.token);
+      res.status(403).json({message:"Data not found!"});
+    }
 
    }).catch((err)=>{res.status(500).json(err);});
   };

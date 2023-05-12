@@ -114,6 +114,7 @@ class RegistrationController {
       });
 
     const user = new User({
+      profile: "uploads/" + req.file.filename,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       email: req.body.email,
@@ -125,7 +126,10 @@ class RegistrationController {
       .then((value) => {
         res
           .status(201)
-          .json({ message: "Data inserted Successfully", data: value });
+          .json({
+            message: "Data inserted Successfully",
+            data: value,
+          });
       })
       .catch((err) => {
         res.status(403).json({ error: err.message });
@@ -137,7 +141,7 @@ class RegistrationController {
     })
       .then((doc) => {
         if (!doc) {
-          res.json({ message: "User not found!" });
+          res.status(404).json({ message: "User not found!" });
         } else {
           bcrypt
             .compare(req.body.password, doc.password)
@@ -150,7 +154,7 @@ class RegistrationController {
                   },
                   process.env.TOKEN_SECRET
                 );
-                res.cookie("token",token);
+                res.cookie("token", token);
                 res.json({
                   message: "Login successfully!",
                   data: doc,
@@ -168,10 +172,9 @@ class RegistrationController {
       })
       .catch((err) => {
         console.log(err);
-        res.status(403).json({ error: err });
+        res.status(500).json({ error: err });
       });
   };
- 
 }
 
 module.exports = RegistrationController;

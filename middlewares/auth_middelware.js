@@ -6,8 +6,14 @@ const jwt = require("jsonwebtoken");
 
 
 
-const storage = multer.diskStorage({
-  destination: "./public/upload",
+const imageStorage = multer.diskStorage({
+  destination: "./public/images/profiles",
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + Date.now() + path.extname(file.originalname));
+  },
+});
+const videoStorage = multer.diskStorage({
+  destination: "./public/videos",
   filename: (req, file, cb) => {
     cb(null, file.fieldname + Date.now() + path.extname(file.originalname));
   },
@@ -18,7 +24,9 @@ const imageFilter = (req, file, cb) => {
   if (extension === "png" || extension === "jpg" || extension === "jpeg") {
     return cb(null, true);
   } else {
-    return cb(Error("only images are allowed"));
+    const error=Error("only images are allowed");
+    error.statusCode=403;
+    return cb(error);
   }
 };
 const videoFilter = (req, file, cb) => {
@@ -26,21 +34,24 @@ const videoFilter = (req, file, cb) => {
   if (extension === "mp4" || extension === "mkv" || extension === "mov") {
     return cb(null, true);
   } else {
-    return cb(Error("only videos are allowed"));
+    const error=Error("only videos are allowed");
+    error.statusCode=403;
+    return cb(error);
   }
 };
 class AuthMiddleware {
   static imageMiddleware = multer({
-    storage: storage,
+    storage: imageStorage,
     fileFilter: imageFilter,
   }).single("image");
 
   static videoMiddleware = multer({
-    storage: storage,
+    storage: videoStorage,
     fileFilter: videoFilter,
   }).single("video");
 
   static signUpMiddleware = function (req, res, next) {
+    
     User.findOne({
       email: req.body.email,
     }).then((doc) => {
@@ -48,6 +59,7 @@ class AuthMiddleware {
         const schema = Joi.object({
           email: Joi.string().email().required(),
           firstname: Joi.string().min(3).max(30).required(),
+        
           password: Joi.string()
             .pattern(
               new RegExp(
@@ -64,7 +76,12 @@ class AuthMiddleware {
         if (error) {
           return res.status(403).json({ error: error.details[0].message });
         } else {
-          next();
+          if(req.file==null){
+            res.status(400).json({message:"Profile image is required!"});
+          }else{
+            res.json(req.file);
+          }
+          
         }
       } else {
         res.status(409).json({ message: "The email is already exist!" });
@@ -115,4 +132,4 @@ class AuthMiddleware {
     }
   };
 }
-module.exports = AuthMiddleware;
+module.exports = {AuthMiddleware,imageFilter};

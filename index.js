@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const authRoutes = require("./routes/auth_routes");
 const userRoutes = require("./routes/user_routes");
+const carRoutes = require("./routes/car_data_routes");
+const brandRoutes = require("./routes/brand_routes");
 const errorHandler = require("./error_handler/error_handler");
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
-const cookieParser=require("cookie-parser");
+const cookieParser = require("cookie-parser");
 
 const port = process.env.PORT || 3000;
 
@@ -23,11 +25,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
-app.use("/uploads", express.static("./public/upload"));
-
+app.use("/car", carRoutes);
+app.use("/brand", brandRoutes);
+app.use("/user", express.static("./public/images/profiles"));
+app.use("/car", express.static("./public/images/car_images/thumbnails"));
+app.use("/car", express.static("./public/images/car_images/feature_images"));
+app.use("/brand", express.static("./public/images/brand_images/logos"));
 
 app.get("/", (req, res) => {
-  res.cookie("name","value");
+  res.cookie("name", "value");
   res.json({ message: "Api is working" });
 });
 
