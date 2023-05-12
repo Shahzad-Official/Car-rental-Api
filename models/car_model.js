@@ -41,6 +41,7 @@ var carSchema = new mongoose.Schema({
     required: true,
   },
   creatorId: {
+    type:String,
     default: "",
   },
   createdOn: {

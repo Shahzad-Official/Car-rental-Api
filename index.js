@@ -37,9 +37,6 @@ app.get("/", (req, res) => {
   res.json({ message: "Api is working" });
 });
 
-app.get("/error", (req, res) => {
-  throw Error("Error testing");
-});
 
 app.use(errorHandler);
 

@@ -26,14 +26,14 @@ class BrandController {
   static userBrands = async (req, res) => {
     const token = req.headers.authorization.split("Bearer ")[1];
     const tokenData = decode(token);
-    await Brand.find({ creatorId: tokenData.id })
-      .then((docs) => {
-        res.json({ message: "success", data: docs });
-      })
-      .catch((err) => {
-        console.log(err),
-          res.status(500).json({ error: "Error while fetching data!" });
-      });
+    // await Brand.find({ creatorId: tokenData.id })
+    //   .then((docs) => {
+    //     res.json({ message: "success", data: docs });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err),
+    //       res.status(500).json({ error: "Error while fetching data!" });
+    //   });
   };
 }
 module.exports = BrandController;
