@@ -12,6 +12,7 @@ routes.post(
   BrandController.createBrand
 );
 
-routes.get("/allBrands",AuthMiddleware.tokenAuthentication, BrandController.userBrands);
+routes.get("/allBrands",AuthMiddleware.tokenAuthentication, BrandController.allBrands);
+routes.get("/myBrands",AuthMiddleware.tokenAuthentication, BrandController.userBrands);
 
 module.exports = routes;

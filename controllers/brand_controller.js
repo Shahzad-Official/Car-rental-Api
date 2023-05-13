@@ -41,5 +41,18 @@ class BrandController {
       });
    
   };
+  static allBrands = async (req, res) => {
+
+    await Brand.find()
+      .then((docs) => {
+        res.json({ message: "success", data: docs });
+      })
+      .catch((err) => {
+        console.log(err),
+          res.status(500).json({ error: "Error while fetching data!" });
+      });
+   
+  };
+  
 }
 module.exports = BrandController;
