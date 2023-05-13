@@ -114,7 +114,7 @@ class RegistrationController {
       });
 
     const user = new User({
-      profile: "uploads/" + req.file.filename,
+      profile: "user/" + req.file.filename,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       email: req.body.email,
@@ -151,6 +151,7 @@ class RegistrationController {
                   {
                     email: doc.email,
                     password: doc.password,
+                    id:doc.id,
                   },
                   process.env.TOKEN_SECRET
                 );

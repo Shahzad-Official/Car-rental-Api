@@ -6,9 +6,9 @@ const { AuthMiddleware } = require("../middlewares/auth_middelware");
 
 const routes = express.Router();
 
-routes.post("/createCar",AuthMiddleware.tokenAuthentication,CarMiddleware.carThumbnail ,CarController.createCar);
+routes.post("/createCar",AuthMiddleware.tokenAuthentication,CarMiddleware.carThumbnail ,CarMiddleware.validateCarData,CarController.createCar);
 routes.get("/allCars",AuthMiddleware.tokenAuthentication,CarController.getAllCars);
-routes.get("/brand/allCars",AuthMiddleware.tokenAuthentication,CarController.getAllCars);
+routes.get("/allCars/:brandId",AuthMiddleware.tokenAuthentication,CarController.getCarByBrand);
 
 routes.get("/", (req, res) => {
     console.log("Data Reading");

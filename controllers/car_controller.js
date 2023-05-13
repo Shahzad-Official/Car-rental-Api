@@ -1,6 +1,7 @@
-const Brand = require("../models/brand_model");
+
 const Car = require("../models/car_model");
 const jwt = require("jsonwebtoken");
+const fs=require("fs");
 
 class CarController {
   static createCar = async (req, res) => {
@@ -14,44 +15,43 @@ class CarController {
       priceHalfWeek,
       description,
     } = req.body;
-    const { thumbnail } = "thumbnail/" + req.file.filename;
-    const { featureImages } = req.files;
-    let allImages = [];
-
-    featureImages.forEach((element) => {
-      allImages.push("featurImage/" + element.filename);
-    });
+   
+      const thumbnail  = "car/" + req.file.filename;
+    
     const token = req.headers.authorization.split("Bearer ")[1];
     const decoded = jwt.decode(token);
-    res.json(decoded);
-    // const car = new Car({
-    //   creatorId:decoded.id,
-    //   carname: carname,
-    //   brandId: brandId,
-    //   thumbnail: thumbnail,
-    //   featureImages: allImages,
-    //   noOfSeats: noOfSeats,
-    //   maxSpeed: maxSpeed,
-    //   pricePerDay: pricePerDay,
-    //   priceHalfWeek: priceHalfWeek,
-    //   pricePerWeek: pricePerWeek,
-    //   description: description,
-    // });
-    // await car
-    //   .save()
-    //   .then((doc) => {
-    //     res
-    //       .status(201)
-    //       .json({ message: "Car data created successfully!", data: doc });
-    //   })
-    //   .catch((error) => {
-    //     res
-    //       .status(500)
-    //       .json({ error: "Database error occured!", error: error.message });
-    //   });
+    
+    const car = new Car({
+      creatorId:decoded.id,
+      carname: carname,
+      brandId: brandId,
+      thumbnail: thumbnail,
+    
+      noOfSeats: noOfSeats,
+      maxSpeed: maxSpeed,
+      pricePerDay: pricePerDay,
+      priceHalfWeek: priceHalfWeek,
+      pricePerWeek: pricePerWeek,
+      description: description,
+    });
+    await car
+      .save()
+      .then((doc) => {
+        res
+          .status(201)
+          .json({ message: "Car data created successfully!", data: doc });
+      })
+      .catch((error) => {
+        fs.unlinkSync(req.file.path);
+        res
+          .status(500)
+          .json({ error: "Database error occured!", error: error.message });
+      });
+    
   };
   static getCarByBrand = async (req, res) => {
-    const brandId = "";
+    const brandId = req.params.brandId;
+    
     await Car.find({ brandId: brandId })
       .then((docs) => {
         res.json({ message: "success", data: docs });

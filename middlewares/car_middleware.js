@@ -7,22 +7,12 @@ const thumbnailStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      req.file.fieldname + Date.now() + path.extname(req.file.originalname)
+      file.fieldname + Date.now() + path.extname(file.originalname)
     );
   },
 });
 
-const featureImagesStorage = multer.diskStorage({
-  destination: "./public/images/car_images/feature_images",
-  filename: (req, file, cb) => {
-    req.files.forEach((element) => {
-      cb(
-        null,
-        "FeatureImage_" + Date.now() + path.extname(element.originalname)
-      );
-    });
-  },
-});
+
 
 class CarMiddleware {
  
@@ -30,10 +20,14 @@ class CarMiddleware {
     storage: thumbnailStorage,
     fileFilter: imageFilter,
   }).single("thumbnail");
-  static carFeatureImages = multer({
-    storage: thumbnailStorage,
-    fileFilter: imageFilter,
-  }).array("featureImages");
+  static validateCarData=(req,res,next)=>{
+    if(req.file==null){
+      res.status(404).json({error:"thumbnail field is required!"});
+    }else{
+      next();
+      
+    }
+  }
 }
 
 module.exports = CarMiddleware;

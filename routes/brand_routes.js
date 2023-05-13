@@ -8,9 +8,10 @@ routes.post(
   "/createBrand",
   AuthMiddleware.tokenAuthentication,
   BrandMiddleware.brandLogo,
+  BrandMiddleware.brandInfoMiddleware,
   BrandController.createBrand
 );
 
-routes.get("/myBrands", BrandController.userBrands);
+routes.get("/allBrands",AuthMiddleware.tokenAuthentication, BrandController.userBrands);
 
 module.exports = routes;
