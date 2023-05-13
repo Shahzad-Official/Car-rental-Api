@@ -9,6 +9,7 @@ require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 const cookieParser = require("cookie-parser");
 
+
 const port = process.env.PORT || 3000;
 
 mongoose
@@ -30,12 +31,8 @@ app.use("/brand", brandRoutes);
 app.use("/user", express.static("./public/images/profiles"));
 app.use("/car", express.static("./public/images/car_images/thumbnails"));
 app.use("/car", express.static("./public/images/car_images/feature_images"));
-app.use("/brand", express.static("./public/images/brand_images/logos"));
+app.use("/brand", express.static("./public/images/brand_logos"));
 
-app.get("/", (req, res) => {
-  res.cookie("name", "value");
-  res.json({ message: "Api is working" });
-});
 
 
 app.use(errorHandler);
