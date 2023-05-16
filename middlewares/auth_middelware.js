@@ -119,7 +119,7 @@ class AuthMiddleware {
       res.status(401).json({ message: "Token required!" });
     } else {
       const token = req.headers.authorization.split("Bearer ")[1];
-        if(cookie===token){
+     
           jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
             if (err) {
               return res.status(403).json({ message: "Invalid token" });
@@ -128,9 +128,7 @@ class AuthMiddleware {
             next();
             }
           });
-        }else{
-          res.status(401).json({message:"Token has expired!"});
-        }
+        
       
     }
   };
