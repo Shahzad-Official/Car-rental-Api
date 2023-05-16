@@ -4,6 +4,7 @@ const { AuthMiddleware } = require('../middlewares/auth_middelware');
 
 
 const router=express.Router();
+
 router.post("/otp",RegistrationController.sendOTP);
 router.post("/image",AuthMiddleware.imageMiddleware,RegistrationController.sendImage);
 router.post("/video",AuthMiddleware.videoMiddleware,RegistrationController.sendVideo);

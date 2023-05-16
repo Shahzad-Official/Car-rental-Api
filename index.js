@@ -33,7 +33,9 @@ app.use("/car", express.static("./public/images/car_images/thumbnails"));
 app.use("/car", express.static("./public/images/car_images/feature_images"));
 app.use("/brand", express.static("./public/images/brand_logos"));
 
-
+app.post("/",(req,res)=>{
+  res.json("hello");
+})
 
 app.use(errorHandler);
 
