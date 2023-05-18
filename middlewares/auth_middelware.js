@@ -21,6 +21,7 @@ const videoStorage = multer.diskStorage({
 });
 
 const imageFilter = (req, file, cb) => {
+  console.log(file);
   const extension = path.extname(file.originalname).split(".")[1];
   if (extension === "png" || extension === "jpg" || extension === "jpeg") {
     return cb(null, true);
@@ -113,8 +114,7 @@ class AuthMiddleware {
     }
   };
   static tokenAuthentication = (req, res, next) => {
-    const cookie=req.cookies.token;
-    
+   
     if (req.headers.authorization == null) {
       res.status(401).json({ message: "Token required!" });
     } else {

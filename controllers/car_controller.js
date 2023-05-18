@@ -61,6 +61,21 @@ class CarController {
         res.status(500).json({ error: "Error occured while fetching data!" });
       });
   };
+  static getMyCars= async (req, res) => {
+  const token=req.headers.authorization.split("Bearer ")[1];
+ 
+  const decoded=jwt.decode(token);
+  
+  
+    await Car.find({ creatorId: decoded.id })
+      .then((docs) => {
+        res.json({ message: "success", data: docs });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: "Error occured while fetching data!" });
+      });
+  };
   static getAllCars = async (req, res) => {
     await Car.find()
       .then((docs) => {

@@ -119,6 +119,8 @@ class RegistrationController {
       lastname: req.body.lastname,
       email: req.body.email,
       password: hashPassword,
+      phoneCode:req.body.phoneCode,
+      phoneNumber:req.body.phoneNumber,
     });
 
     await user
@@ -155,7 +157,8 @@ class RegistrationController {
                   },
                   process.env.TOKEN_SECRET
                 );
-                res.cookie("token", token);
+               
+                req.session.token=token;
                 res.json({
                   message: "Login successfully!",
                   data: doc,
