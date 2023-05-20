@@ -8,6 +8,7 @@ const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
 const client = require("twilio")(accountSid, authToken);
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs=require("fs");
 
 let transporter = nodeMailer.createTransport({
   host: process.env.SMTP,
@@ -121,6 +122,7 @@ class RegistrationController {
       password: hashPassword,
       phoneCode:req.body.phoneCode,
       phoneNumber:req.body.phoneNumber,
+      phoneCountry:req.body.phoneCountry,
     });
 
     await user
@@ -134,12 +136,14 @@ class RegistrationController {
           });
       })
       .catch((err) => {
+        fs.unlinkSync(req.file.path);
         res.status(403).json({ error: err.message });
       });
   };
   static login = (req, res) => {
     User.findOne({
       email: req.body.email,
+      isVerified:true,
     })
       .then((doc) => {
         if (!doc) {
