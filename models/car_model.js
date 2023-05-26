@@ -4,14 +4,13 @@ var carSchema = new mongoose.Schema(
   {
     carname: {
       type: String,
-      unique:true,
       required: true,
     },
     thumbnail: {
       type: String,
       required: true,
     },
-    
+
     brandId: {
       type: String,
       required: true,
