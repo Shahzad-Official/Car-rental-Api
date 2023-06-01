@@ -6,14 +6,11 @@ const { AuthMiddleware } = require("../middlewares/auth_middelware");
 
 const routes = express.Router();
 
+routes.get("/user",AuthMiddleware.tokenAuthentication,CarController.getCars);
 routes.post("/",AuthMiddleware.tokenAuthentication,CarMiddleware.carThumbnail ,CarMiddleware.validateCarData,CarController.createCar);
 routes.get("/",AuthMiddleware.tokenAuthentication,CarController.getAllCars);
-routes.get("/:brandId",AuthMiddleware.tokenAuthentication,CarController.getCarByBrand);
-routes.get("/user",AuthMiddleware.tokenAuthentication,CarController.getCars);
-routes.delete("/:carId",AuthMiddleware.tokenAuthentication,CarController.deleteCar);
-routes.get("/", (req, res) => {
-    console.log("Data Reading");
-  res.json("reading data");
-});
+
+routes.delete("/",AuthMiddleware.tokenAuthentication,CarController.deleteCar);
+
 
 module.exports = routes;

@@ -5,14 +5,16 @@ const { AuthMiddleware } = require("../middlewares/auth_middelware");
 const routes = express.Router();
 
 routes.post(
-  "/createBrand",
+  "/",
   AuthMiddleware.tokenAuthentication,
   BrandMiddleware.brandLogo,
   BrandMiddleware.brandInfoMiddleware,
   BrandController.createBrand
 );
 
-routes.get("/allBrands",AuthMiddleware.tokenAuthentication, BrandController.allBrands);
-routes.get("/myBrands",AuthMiddleware.tokenAuthentication, BrandController.userBrands);
+
+routes.get("/",AuthMiddleware.tokenAuthentication, BrandController.allBrands);
+routes.get("/cars",AuthMiddleware.tokenAuthentication, BrandController.getCarByBrand);
+routes.get("/user",AuthMiddleware.tokenAuthentication, BrandController.userBrands);
 
 module.exports = routes;

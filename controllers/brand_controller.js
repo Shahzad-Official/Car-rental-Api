@@ -1,6 +1,8 @@
 const { decode } = require("jsonwebtoken");
 const Brand = require("../models/brand_model");
 const fs = require("fs");
+const {isEmptyObject}=require("../utils/time_utils");
+const Car = require("../models/car_model");
 
 class BrandController {
   static createBrand = async (req, res) => {
@@ -52,6 +54,23 @@ class BrandController {
           res.status(500).json({ error: "Error while fetching data!" });
       });
    
+  };
+
+  static getCarByBrand = async (req, res) => {
+    const query = req.query;
+
+    if(isEmptyObject(query)){
+      res.status(400).json({message:"brand parameter is required!"});
+    }else{
+      await Car.find({ brandId: query.brand })
+      .then((docs) => {
+        res.json({ message: "success", data: docs ,length:docs.length});
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: "Error occured while fetching data!" });
+      });
+    }
   };
   
 }

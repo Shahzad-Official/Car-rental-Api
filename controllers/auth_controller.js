@@ -162,7 +162,7 @@ class RegistrationController {
                   process.env.TOKEN_SECRET
                 );
                
-                req.session.token=token;
+                
                 res.json({
                   message: "Login successfully!",
                   data: doc,
