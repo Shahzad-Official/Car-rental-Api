@@ -73,20 +73,29 @@ class CarController {
         res.status(500).json({ error: "Error occured while fetching data!" });
       });
   };
-  static getMyCars = async (req, res) => {
-    const token = req.headers.authorization.split("Bearer ")[1];
 
-    const decoded = jwt.decode(token);
 
-    await Car.find({ creatorId: decoded.id })
-      .then((docs) => {
-        res.json({ message: "success", data: docs });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ error: "Error occured while fetching data!" });
-      });
+  static getCars = async (req, res) => {
+//     const token = req.headers.authorization.split("Bearer ")[1];
+// console.log(token);
+//     const decoded = jwt.decode(token);
+
+res.json("hello");
+    // await Car.find({ creatorId: decoded.id })
+    //   .then((docs) => {
+    //     if(docs){
+    //       res.json({ message: "success", data: docs });
+    //     }else{
+    //       res.status(404).json({message:"Data not found!",data:[]});
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     res.status(500).json({ error: "Error occured while fetching data!" });
+    //   });
   };
+
+
   static getAllCars = async (req, res) => {
     await Car.find()
       .then((docs) => {
@@ -97,5 +106,27 @@ class CarController {
         res.status(500).json({ error: "Error fetching data!" });
       });
   };
+
+
+  static deleteCar=async(req,res)=>{
+    const token = req.headers.authorization.split("Bearer ")[1];
+
+    const decoded = jwt.decode(token);
+    const id=req.params.carId;
+    await Car.findOneAndDelete({
+      _id:id,
+      creatorId: decoded.id,
+    }).then((doc)=>{
+      if(doc){
+       res.status(202).json({message:"Car deleted successfully!",data:doc});
+      }else{
+        res.status(204).json({message:"Car Id not found!"});
+      }
+    }).catch((err)=>{
+    res.status(404).json({message:"Error occurred!"});
+    })
+  };
+
+
 }
 module.exports = CarController;
