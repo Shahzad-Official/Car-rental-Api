@@ -64,7 +64,13 @@ class BrandController {
     }else{
       await Car.find({ brandId: query.brand })
       .then((docs) => {
-        res.json({ message: "success", data: docs ,length:docs.length});
+        
+        if(docs.length===0){
+          res.status(404).json({message:"Data not found!"});
+        }else{
+       
+          res.json({ message: "success", data: docs ,length:docs.length});
+        }
       })
       .catch((err) => {
         console.log(err);
