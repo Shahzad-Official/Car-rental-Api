@@ -9,7 +9,9 @@ require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 const cookieParser = require("cookie-parser");
 
-
+const socketIO = require('socket.io');
+const cors = require('cors');
+app.use(cors());
 
 
 const port = process.env.PORT || 3000;
@@ -22,6 +24,8 @@ mongoose
   .catch((err) => {
     throw Error(err);
   });
+
+  
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,7 +44,34 @@ app.use("/brand", express.static("./public/images/brand_logos"));
 
 app.use(errorHandler);
 
-// Start the server
-app.listen(port, () => {
-  console.log("Server is listening on port " + port);
+  
+let allMessages=[];
+const server = app.listen(port, () => {
+  console.log('Server is running on port'+ port);
 });
+
+const io = socketIO(server, {
+  cors: {
+    origin: 'http://52.146.8.104:5000', // Replace with your Flutter app's URL
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('chat_message', (message) => {
+    console.log('Received message:', message);
+    allMessages.push(message);
+    console.log(allMessages);
+    io.emit("my_messages",allMessages);
+  });
+  
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+
