@@ -1,12 +1,11 @@
-
 const { default: mongoose } = require("mongoose");
 
 mongoose;
 const userSchema = new mongoose.Schema(
   {
-    profile:{
-      type:String,
-      required:true,
+    profile: {
+      type: String,
+      required: true,
     },
     firstname: {
       required: true,
@@ -21,33 +20,45 @@ const userSchema = new mongoose.Schema(
       unique: true,
       type: String,
     },
-    phoneCountry:{
-      required:true,
-      type:String,
+    phoneCountry: {
+      required: true,
+      type: String,
     },
-    phoneCode:{
-        required:true,
-        type:String,
+    phoneCode: {
+      required: true,
+      type: String,
     },
-    phoneNumber:{
-        required:true,
-        type:String,
+    phoneNumber: {
+      required: true,
+      type: String,
     },
 
     password: {
       required: true,
       type: String,
     },
-    createdOn:{
-     type:Date,
-      default:Date.now(),
+    location: {
+      address: {
+        type: String,
+        required: true,
+      },
+      latitude: {
+        type: String,
+        required: true,
+      },
+      longitude: {
+        type: String,
+        required: true,
+      },
     },
-    isVerified:{
-      type:Boolean,
-      default:false,
-    }
-   
-    
+    createdOn: {
+      type: Date,
+      default: Date.now(),
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false }
 );

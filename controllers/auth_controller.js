@@ -123,6 +123,11 @@ class RegistrationController {
       phoneCode:req.body.phoneCode,
       phoneNumber:req.body.phoneNumber,
       phoneCountry:req.body.phoneCountry,
+      location:{
+        address:req.body.address,
+        latitude:req.body.latitude,
+        longitude:req.body.longitude,
+      },
     });
 
     await user

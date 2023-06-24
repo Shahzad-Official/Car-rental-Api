@@ -1,8 +1,9 @@
 const Car = require("../models/car_model");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const { isEmptyObject } = require("../utils/time_utils");
-var ObjectId = require('mongoose').Types.ObjectId;
+const { isEmptyObject, daysToMilliseconds } = require("../utils/time_utils");
+
+var ObjectId = require("mongoose").Types.ObjectId;
 
 class CarController {
   static createCar = async (req, res) => {
@@ -53,12 +54,10 @@ class CarController {
             .catch((error) => {
               fs.unlinkSync(req.file.path);
               console.log(error);
-              res
-                .status(500)
-                .json({
-                  error: "Database error occured!",
-                  error: error.message,
-                });
+              res.status(500).json({
+                error: "Database error occured!",
+                error: error.message,
+              });
             });
         }
       })
@@ -76,24 +75,100 @@ class CarController {
 
     const decoded = jwt.decode(token);
 
-    await Car.find({ creatorId: decoded.id })
-      .then((docs) => {
-        if (docs) {
-          res.json({ message: "success", data: docs, length: docs.length });
-        } else {
-          res.status(404).json({ message: "Data not found!", data: [] });
-        }
+    await Car.aggregate([
+      {
+        $match: {
+          creatorId: decoded.id,
+        },
+      },
+      {
+        $addFields: {
+          creatorId: {
+            $toObjectId: "$creatorId",
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "creatorId",
+          foreignField: "_id",
+          as: "creator",
+        },
+      },
+      {
+        $unwind: "$creator",
+      },
+      {
+        $addFields: {
+          brandId: {
+            $toObjectId: "$brandId",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "brands",
+          localField: "brandId",
+          foreignField: "_id",
+          as: "brand",
+        },
+      },
+      {
+        $unwind: "$brand",
+      },
+    ])
+      .then((value) => {
+        res.json({ message: "success", data: value, length: value.length });
       })
       .catch((err) => {
         console.log(err);
-        res.status(500).json({ error: "Error occured while fetching data!" });
+        res.status(500).json({ error: "Error fetching data!" });
       });
   };
 
   static getAllCars = async (req, res) => {
-    await Car.find()
-      .then((docs) => {
-        res.json({ message: "success", data: docs, length: docs.length });
+    await Car.aggregate([
+      {
+        $addFields: {
+          creatorId: {
+            $toObjectId: "$creatorId",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "creatorId",
+          foreignField: "_id",
+          as: "creator",
+        },
+      },
+      {
+        $unwind: "$creator",
+      },
+      {
+        $addFields: {
+          brandId: {
+            $toObjectId: "$brandId",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "brands",
+          localField: "brandId",
+          foreignField: "_id",
+          as: "brand",
+        },
+      },
+      {
+        $unwind: "$brand",
+      },
+    ])
+      .then((value) => {
+        res.json({ message: "success", data: value, length: value.length });
       })
       .catch((err) => {
         console.log(err);
@@ -109,31 +184,31 @@ class CarController {
     if (isEmptyObject(query)) {
       res.status(400).json({ message: "carId Param is required!" });
     } else {
-    
-      if( ObjectId.isValid(query.carId)){
-        await Car.findOneAndDelete(
-          {
-           _id:query.carId,
-           creatorId:decoded.id,
-          }
-       )
-         .then((doc) => {
-           if (doc) {
-             res
-               .status(202)
-               .json({ message: "Car deleted successfully!", data: doc });
-           } else {
-             res.status(400).json({ message: "Car Id not found!" });
-           }
-         })
-         .catch((err) => {
-           console.log(err);
-           res.status(404).json({ message: "Error occurred!" });
-         });
-      }else{
-       res.status(404).json({message:"invalid id!"});
+      if (ObjectId.isValid(query.carId)) {
+        await Car.findOneAndDelete({
+          _id: query.carId,
+          creatorId: decoded.id,
+        })
+          .then((doc) => {
+            if (doc) {
+              res
+                .status(202)
+                .json({ message: "Car deleted successfully!", data: doc });
+            } else {
+              res.status(400).json({ message: "Car Id not found!" });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(404).json({ message: "Error occurred!" });
+          });
+      } else {
+        res.status(404).json({ message: "invalid id!" });
       }
     }
   };
+
+  
 }
+
 module.exports = CarController;
