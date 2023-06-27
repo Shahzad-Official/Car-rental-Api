@@ -6,11 +6,11 @@ class BookingController {
     const token = req.headers.authorization.split("Bearer ")[1];
 
     const decoded = jwt.decode(token);
-    const { carId, bookedOn, expiredOn, duration } = req.body;
+    const { carId, bookedOn, expiredOn, duration,price } = req.body;
     const booking = new Bookings({
       carId: carId,
       userId: decoded.id,
-
+      price:price,
       bookedOn: bookedOn,
       expiredOn: expiredOn,
       duration: duration,
@@ -94,12 +94,31 @@ class BookingController {
       {
         $unwind: "$brandData",
       },
+      {
+        $addFields: {
+          "carData.creatorId": {
+            $toObjectId: "$carData.creatorId",
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "carData.creatorId",
+          foreignField: "_id",
+          as: "ownerData",
+        },
+      },
+      {
+        $unwind: "$ownerData",
+      },
     ])
       .then((docs) => {
         if (docs.length === 0) {
           res.json({ message: "No data found" });
         } else {
-          res.json({ data: docs, length: docs.length });
+          res.json({ bookingData: docs, length: docs.length });
         }
       })
       .catch((err) => {

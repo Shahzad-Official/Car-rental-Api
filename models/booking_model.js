@@ -22,6 +22,10 @@ var bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: String,
+      required: true,
+    },
   },
   { versionKey: false }
 );
