@@ -1,6 +1,6 @@
 const Bookings = require("../models/booking_model");
 const jwt = require("jsonwebtoken");
-const { daysToMilliseconds } = require("../utils/time_utils");
+
 class BookingController {
   static bookCar = (req, res) => {
     const token = req.headers.authorization.split("Bearer ")[1];
@@ -22,13 +22,6 @@ class BookingController {
           message: "Car has been booked Successfully!",
           data: val,
         });
-
-        setTimeout(async () => {
-          console.log("expired");
-          await Bookings.findByIdAndUpdate(val.id, {
-            status: "expired",
-          });
-        }, daysToMilliseconds(duration));
       })
       .catch((err) => {
         console.log(err);
@@ -44,7 +37,7 @@ class BookingController {
 
     const decoded = jwt.decode(token);
     await Bookings.aggregate([
-      { $match: { userId: decoded.id, status: "active" } },
+      { $match: { userId: decoded.id } },
       {
         $addFields: {
           userId: {
