@@ -116,7 +116,7 @@ class BookingController {
     ])
       .then((docs) => {
         if (docs.length === 0) {
-          res.json({ message: "No data found" });
+          res.status(400).json({ message: "No data found" });
         } else {
           res.json({ bookingData: docs, length: docs.length });
         }

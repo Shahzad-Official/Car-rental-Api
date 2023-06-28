@@ -146,6 +146,7 @@ class RegistrationController {
       });
   };
   static login = (req, res) => {
+    
     User.findOne({
       email: req.body.email,
       isVerified:true,

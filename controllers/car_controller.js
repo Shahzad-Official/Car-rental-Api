@@ -36,7 +36,7 @@ class CarController {
       pricePerWeek: pricePerWeek,
       description: description,
     });
-    await Car.findOne({ carname: carname })
+    await Car.findOne({ carname: carname ,brandId:brandId})
       .then(async (doc) => {
         if (doc) {
           fs.unlinkSync(req.file.path);
