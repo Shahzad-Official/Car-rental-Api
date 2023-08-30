@@ -79,7 +79,8 @@ class RegistrationController {
         });
       })
       .catch((err) => {
-        throw Error(err);
+        console.log(err);
+        res.json({message:"otp send error"});
       });
   }
 

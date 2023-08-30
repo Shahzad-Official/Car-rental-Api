@@ -36,7 +36,7 @@ class CarController {
       pricePerWeek: pricePerWeek,
       description: description,
     });
-    await Car.findOne({ carname: carname ,brandId:brandId})
+    await Car.findOne({ carname: carname, brandId: brandId })
       .then(async (doc) => {
         if (doc) {
           fs.unlinkSync(req.file.path);
@@ -135,7 +135,10 @@ class CarController {
           creatorId: {
             $toObjectId: "$creatorId",
           },
-        },
+          brandId: {
+            $toObjectId: "$brandId",
+          },
+        }, 
       },
       {
         $lookup: {
@@ -148,13 +151,7 @@ class CarController {
       {
         $unwind: "$creator",
       },
-      {
-        $addFields: {
-          brandId: {
-            $toObjectId: "$brandId",
-          },
-        },
-      },
+
       {
         $lookup: {
           from: "brands",
@@ -207,8 +204,6 @@ class CarController {
       }
     }
   };
-
-  
 }
 
 module.exports = CarController;
