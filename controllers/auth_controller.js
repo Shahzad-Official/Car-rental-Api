@@ -2,13 +2,13 @@ require("dotenv").config();
 const nodeMailer = require("nodemailer");
 const otpGen = require("otp-generator");
 const User = require("../models/user_model");
-const accountSid = "AC05a2aa74b5ae229fcac4a3d0feb9f6b4";
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const verifySid = "VA9028c16ea7d62e48a38137272a04efc3";
+const accountSid = "ACbe892f43a36868cc64665bdf27924c0d";
+const authToken = "7c5546d4205aa06c788ffd803e26f288";
+const verifySid = "VAc5abde583b75bcf70b854534c8d5cb51";
 const client = require("twilio")(accountSid, authToken);
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const fs=require("fs");
+const fs = require("fs");
 
 let transporter = nodeMailer.createTransport({
   host: process.env.SMTP,
@@ -68,20 +68,39 @@ class RegistrationController {
   }
 
   static sendNumberOtp(req, res) {
-    client.verify.v2
-      .services(verifySid)
-      .verifications.create({ to: req.body.phone, channel: "sms" })
-      .then((verification) => {
-        res.json({
-          valid: verification.valid,
-          status: verification.status,
-          phone: verification.to,
-        });
+    var message = {
+      from: "whatsapp:+14155238886",
+      body: "Hello there!",
+      to: "whatsapp:" + req.body.phone,
+    };
+    console.log(req.body);
+    client.messages
+      .create(message)
+      .then((msg) => {
+        if (msg.status == "sent") {
+          res.json({ message: "Message has been sent", data: msg });
+        }else if(msg.status=="queued"){
+          res.json({ message: "Message has been delivered in queued", data: msg });
+        }
       })
       .catch((err) => {
         console.log(err);
-        res.json({message:"otp send error"});
+        res.json({ message: "send error" });
       });
+    // client.verify.v2
+    //   .services(verifySid)
+    //   .verifications.create({ to: req.body.phone, channel: "sms" })
+    //   .then((verification) => {
+    //     res.json({
+    //       valid: verification.valid,
+    //       status: verification.status,
+    //       phone: verification.to,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     res.json({message:"otp send error",error:err});
+    //   });
   }
 
   static verifyOTP(req, res) {
@@ -104,7 +123,9 @@ class RegistrationController {
         }
       })
       .catch((err) => {
-        throw Error(err.Error);
+        res
+          .status(err.status)
+          .json({ success: false, message: "User is already verified!" });
       });
   }
 
@@ -121,25 +142,23 @@ class RegistrationController {
       lastname: req.body.lastname,
       email: req.body.email,
       password: hashPassword,
-      phoneCode:req.body.phoneCode,
-      phoneNumber:req.body.phoneNumber,
-      phoneCountry:req.body.phoneCountry,
-      location:{
-        address:req.body.address,
-        latitude:req.body.latitude,
-        longitude:req.body.longitude,
+      phoneCode: req.body.phoneCode,
+      phoneNumber: req.body.phoneNumber,
+      phoneCountry: req.body.phoneCountry,
+      location: {
+        address: req.body.address,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
       },
     });
 
     await user
       .save()
       .then((value) => {
-        res
-          .status(201)
-          .json({
-            message: "Data inserted Successfully",
-            data: value,
-          });
+        res.status(201).json({
+          message: "Data inserted Successfully",
+          data: value,
+        });
       })
       .catch((err) => {
         fs.unlinkSync(req.file.path);
@@ -147,10 +166,9 @@ class RegistrationController {
       });
   };
   static login = (req, res) => {
-    
     User.findOne({
       email: req.body.email,
-      isVerified:true,
+      isVerified: true,
     })
       .then((doc) => {
         if (!doc) {
@@ -164,12 +182,11 @@ class RegistrationController {
                   {
                     email: doc.email,
                     password: doc.password,
-                    id:doc.id,
+                    id: doc.id,
                   },
                   process.env.TOKEN_SECRET
                 );
-               
-                
+
                 res.json({
                   message: "Login successfully!",
                   data: doc,

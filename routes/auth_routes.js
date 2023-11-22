@@ -8,7 +8,7 @@ const router=express.Router();
 router.post("/otp",RegistrationController.sendOTP);
 router.post("/image",AuthMiddleware.imageMiddleware,RegistrationController.sendImage);
 router.post("/video",AuthMiddleware.videoMiddleware,RegistrationController.sendVideo);
-router.post("/send_otp",AuthMiddleware.validateUserForSendOtp,RegistrationController.sendNumberOtp);
+router.post("/send_otp",RegistrationController.sendNumberOtp);
 router.post("/verify_otp",RegistrationController.verifyOTP);
 router.post("/signUp",AuthMiddleware.imageMiddleware,AuthMiddleware.signUpMiddleware,RegistrationController.signUp);
 router.post("/login",AuthMiddleware.loginMiddleware,RegistrationController.login);
